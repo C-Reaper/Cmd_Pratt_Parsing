@@ -1,7 +1,7 @@
 #include "/home/codeleaded/System/Static/Library/AST.h"
 #include "/home/codeleaded/System/Static/Library/Files.h"
 
-#define SRC_PATH            "./code/Main"
+#define SRC_PATH            "./code/Main.txt"
 
 #define TOKEN_LINECOMMENT   (TOKEN_START + 0)
 #define TOKEN_ASS           (TOKEN_START + 1)
@@ -13,33 +13,67 @@
 Token Ass_Handler(void* parent,Token* op,TokenMap* args){
     Token* a = (Token*)Vector_Get(args,0);
     Token* b = (Token*)Vector_Get(args,1);
-    return Token_Move(TOKEN_NUMBER,Number_Get(Number_Parse(b->str)));
+    
+    //printf("> ");
+    //Token_Print_S(a);
+    //printf(" = ");
+    //Token_Print_S(b);
+    //printf("\n");
+
+    return Token_New_I64(TOKEN_NUMBER,b->v_i64);
 }
 Token Add_Handler(void* parent,Token* op,TokenMap* args){
     Token* a = (Token*)Vector_Get(args,0);
     Token* b = (Token*)Vector_Get(args,1);
-    return Token_Move(TOKEN_NUMBER,Number_Get(Number_Parse(a->str) + Number_Parse(b->str)));
+
+    //printf("> ");
+    //Token_Print_S(a);
+    //printf(" + ");
+    //Token_Print_S(b);
+    //printf("\n");
+
+    return Token_New_I64(TOKEN_NUMBER,a->v_i64 + b->v_i64);
 }
 Token Sub_Handler(void* parent,Token* op,TokenMap* args){
     Token* a = (Token*)Vector_Get(args,0);
     Token* b = (Token*)Vector_Get(args,1);
-    return Token_Move(TOKEN_NUMBER,Number_Get(Number_Parse(a->str) - Number_Parse(b->str)));
+
+    //printf("> ");
+    //Token_Print_S(a);
+    //printf(" - ");
+    //Token_Print_S(b);
+    //printf("\n");
+
+    return Token_New_I64(TOKEN_NUMBER,a->v_i64 - b->v_i64);
 }
 Token Mul_Handler(void* parent,Token* op,TokenMap* args){
     Token* a = (Token*)Vector_Get(args,0);
     Token* b = (Token*)Vector_Get(args,1);
-    return Token_Move(TOKEN_NUMBER,Number_Get(Number_Parse(a->str) * Number_Parse(b->str)));
+
+    //printf("> ");
+    //Token_Print_S(a);
+    //printf(" * ");
+    //Token_Print_S(b);
+    //printf("\n");
+
+    return Token_New_I64(TOKEN_NUMBER,a->v_i64 * b->v_i64);
 }
 Token Div_Handler(void* parent,Token* op,TokenMap* args){
     Token* a = (Token*)Vector_Get(args,0);
     Token* b = (Token*)Vector_Get(args,1);
+
+    //printf("> ");
+    //Token_Print_S(a);
+    //printf(" / ");
+    //Token_Print_S(b);
+    //printf("\n");
     
-    Number nb = Number_Parse(b->str);
+    Number nb = b->v_i64;
     if(nb == 0){
         printf("[Div_Handler]: Division by Zero!\n");
-        return Token_Move(TOKEN_NUMBER,Number_Get(nb));
+        return Token_New_I64(TOKEN_NUMBER,nb);
     }
-    return Token_Move(TOKEN_NUMBER,Number_Get(Number_Parse(a->str) / nb));
+    return Token_New_I64(TOKEN_NUMBER,a->v_i64 / nb);
 }
 
 int main(int argc, const char *argv[]){
@@ -48,6 +82,8 @@ int main(int argc, const char *argv[]){
     FilesSize size;
     TT_Char* data = Files_ReadTB(SRC_PATH,&size);
     Parser_Parse_CStr(&p,data,SRC_PATH);
+    CStr_Free(&data);
+
     Parser_TF_Num(&p);
     Parser_TF_Esc(&p);
     Parser_TF_Std(&p);
